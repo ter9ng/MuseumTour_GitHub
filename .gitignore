@@ -41,6 +41,14 @@ local.properties
 *.user
 *.sln.docstates
 
+##########
+# mono ###
+##########
+*.sln
+*.dll
+*.mdb
+*.userprefs
+
 # Build results
 
 [Dd]ebug/

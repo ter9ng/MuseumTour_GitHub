@@ -9,7 +9,7 @@ public class scene2 : MonoBehaviour {
 	static ArrayList imgTargetArray = new ArrayList();
 	static ArrayList questionsArray = new ArrayList();
 	static string printList = "";
-	string buttontext = "Scan picture!";
+	string buttontext = "Scan picture";
 	
 	
 	Texture2D cur_image_loaded = null;

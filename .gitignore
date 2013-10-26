@@ -48,6 +48,9 @@ local.properties
 *.dll
 *.mdb
 *.userprefs
+Temp/
+Library/
+obj/
 
 # Build results
 

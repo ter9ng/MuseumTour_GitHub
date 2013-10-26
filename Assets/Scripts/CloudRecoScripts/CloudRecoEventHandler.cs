@@ -334,6 +334,15 @@ public class CloudRecoEventHandler : MonoBehaviour, ICloudRecoEventHandler
         alternativeAnswer2 = "";
         alternativeAnswer3 = "";
         dialogButton = "Add question";
+		
+		if(PlayerPrefs.GetString("phase") == "phase1"){
+		GetComponent<Phase1GUI>().enabled = true;
+		GetComponent<Phase2GUI>().enabled = false;
+		}
+		else if(PlayerPrefs.GetString("phase") == "phase2"){
+		GetComponent<Phase1GUI>().enabled = false;
+		GetComponent<Phase2GUI>().enabled = true;
+		}
 
         // look up the gameobject containing the ImageTargetTemplate:
         mParentOfImageTargetTemplate = ImageTargetTemplate.gameObject;
@@ -353,42 +362,6 @@ public class CloudRecoEventHandler : MonoBehaviour, ICloudRecoEventHandler
 
         // load and remember all used textures:
         mRequestingTexture = Resources.Load("UserInterface/TextureRequesting") as Texture;
-		
-		//********TEST*************
-		
-		
-  		TextRect.x = (Screen.width*(1-w))/2;
-  		TextRect.y = (Screen.height*(1-h))/2;
-  		TextRect.width = Screen.width*w;
-  		TextRect.height = Screen.height*(h/2);
-		
-		
-  		Text2Rect.x = (Screen.width*(1-w))/2;
-  		Text2Rect.y = TextRect.y + 100;
-  		Text2Rect.width = Screen.width*w;
-  		Text2Rect.height = Screen.height*(h/2);
-		
-		
-  		Button1Rect.x = (Screen.width*(1-w))/2;
-  		Button1Rect.y = TextRect.y + 200;
-  		Button1Rect.width = Screen.width*w;
-  		Button1Rect.height = Screen.height*h;
-		
-		
-		QuestionButtonRect.width = Screen.width*w;
-  		QuestionButtonRect.height = Screen.height*h;
-		QuestionButtonRect.x = Screen.width/2 -QuestionButtonRect.width/2;
-		QuestionButtonRect.y = Screen.height - 200;
-		
-		ContinueButtonRect.width = Screen.width*w;
-		ContinueButtonRect.height = Screen.height*h;
-		ContinueButtonRect.x = Screen.width/2 - QuestionButtonRect.width;
-		ContinueButtonRect.y = Screen.height - 200;
-		
-		TestToMainMenuButtonRect.width = Screen.width*w;
-		TestToMainMenuButtonRect.height = Screen.height*h+ ContinueButtonRect.height;
-		TestToMainMenuButtonRect.x = Screen.width/2 - QuestionButtonRect.width;
-		TestToMainMenuButtonRect.y = Screen.height - 200;
 		
     }
 

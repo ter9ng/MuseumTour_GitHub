@@ -87,12 +87,13 @@ public class Menu : MonoBehaviour {
 			{
 				PlayerPrefs.SetString("group", groupname);
 	            PlayerPrefs.SetString("code", sessioncode);
+				PlayerPrefs.SetString("phase", "phase1"); // <-- for testing, vi gjør dette en annen plass etterpå..
 	            StartCoroutine(Post()); //runs Db posting.... next scene loaded in update after bool post equals true
-	
-	            AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-	            AndroidJavaClass jcToast = new AndroidJavaClass("android.widget.Toast");
-	            AndroidJavaObject jo = jc.GetStatic<AndroidJavaObject>("currentActivity");
-	            jcToast.CallStatic("makeText", jc, "TESTING", 0);
+//	
+//	            AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+//	            AndroidJavaClass jcToast = new AndroidJavaClass("android.widget.Toast");
+//	            AndroidJavaObject jo = jc.GetStatic<AndroidJavaObject>("currentActivity");
+//	            jcToast.CallStatic("makeText", jc, "TESTING", 0);
 			}
 			else
 			{
@@ -109,12 +110,28 @@ public class Menu : MonoBehaviour {
 		
 		if (GUI.Button(Button2Rect, "Phase 2")){
 			if(session2Enabled){
-				toastMessage = "Session 2 is enabled";
-				showToast = true;
+					if((0 < groupname.Length) && (groupname.Length < 60) && (0 < sessioncode.Length) && (sessioncode.Length < 30))
+					{
+						PlayerPrefs.SetString("group", groupname);
+	            		PlayerPrefs.SetString("code", sessioncode);
+						PlayerPrefs.SetString("phase", "phase2");
+	            		StartCoroutine(Post()); //runs Db posting.... next scene loaded in update after bool post equals true
+					}
+					else
+					{
+					if(groupname.Length == 0) toastMessage = "Please enter a name for your group!";
+					if(groupname.Length > 60) toastMessage = "Please enter a shorter groupname!";
+					if(sessioncode.Length == 0) toastMessage = "Please enter the session code!";
+					if(sessioncode.Length > 30) toastMessage = "Wrong session code!";
+					showToast = true;
+					
+					toastTimestamp = Environment.TickCount;
+				}
 			}
 			else{
 				toastMessage = "Session 2 is disabled";
 				showToast = true;
+				toastTimestamp = Environment.TickCount;
 			}
 		}
 		GUI.skin.button.fontSize = Screen.height / 60;

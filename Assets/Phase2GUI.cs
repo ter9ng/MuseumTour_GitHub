@@ -8,6 +8,9 @@ public class Phase2GUI : MonoBehaviour {
 	float w = 0.3f; // proportional width (0..1)
     float h = 0.05f; // proportional height (0..1)
 	
+	public int selGridInt = 0;
+    public string[] selStrings = new string[] {"Grid 1", "Grid 2", "Grid 3", "Grid 4"};
+	
 	Rect TextRect = new Rect();
 	Rect Text2Rect = new Rect();
 	Rect Button1Rect = new Rect();
@@ -99,31 +102,35 @@ public class Phase2GUI : MonoBehaviour {
   		SubmitQuestionButtonRect.width = Screen.width*w;
   		SubmitQuestionButtonRect.height = Screen.height*h;
 	}
-	
-	void OnGUI() {
-		
-		{
-			GUI.Label(QuestionLabel1Rect, "Upper TestLabel");
-			GUI.Label(CorrectAnswerLabelRect, "Lower TestLabel");
-			GUI.skin.label.fontSize = Screen.height / 60;
-		
-			CloudRecoEventHandler.inputQuestion = GUI.TextField(QuestionInputRect, CloudRecoEventHandler.inputQuestion);
-			CloudRecoEventHandler.inputSolution = GUI.TextField(CorrectAnswerInputRect, CloudRecoEventHandler.inputSolution);
-			GUI.Label (Alternative1Answer1LabelRect, "Alternative Answers:");
-			CloudRecoEventHandler.alternativeAnswer1 = GUI.TextField (AlternativeAnswer1InputRect, CloudRecoEventHandler.alternativeAnswer1);
-			CloudRecoEventHandler.alternativeAnswer2 = GUI.TextField (AlternativeAnswer2InputRect, CloudRecoEventHandler.alternativeAnswer2);
-			CloudRecoEventHandler.alternativeAnswer3 = GUI.TextField (AlternativeAnswer3InputRect, CloudRecoEventHandler.alternativeAnswer3);
-			
-			GUI.skin.textField.fontSize = Screen.height / 60;
 
-			if(GUI.Button(SubmitQuestionButtonRect, "Submit" ))
-			{ 
-				StartCoroutine(CloudRecoEventHandler.postQuestion());
-				CloudRecoEventHandler.questionTrigger = false;
-				CloudRecoEventHandler.toastTimestamp = Environment.TickCount;
-				CloudRecoEventHandler.questionAdded = true;
-			}
-		}
+	void OnGUI() {
+			
+			//GUILayout.BeginArea(new Rect(Screen.width/6, Screen.height*(5/6), Screen.width*(4/6), Screen.height*(2/3)));
+			//GUILayout.BeginArea(new Rect(10, 10, 100, 100));
+			GUILayout.BeginArea(new Rect( (Screen.width/6), (Screen.height*(5/6)), (Screen.width*(4/6)), Screen.height*(2/3) ));
+  		  	selGridInt = GUILayout.SelectionGrid(selGridInt, selStrings, 1, GUILayout.MaxWidth(Screen.width/3));
+			GUILayout.EndArea();
+				
+			GUI.Label(QuestionLabel1Rect, "Upper TestLabel");
+//			GUI.Label(CorrectAnswerLabelRect, "Lower TestLabel");
+//			GUI.skin.label.fontSize = Screen.height / 60;
+//		
+//			CloudRecoEventHandler.inputQuestion = GUI.TextField(QuestionInputRect, CloudRecoEventHandler.inputQuestion);
+//			CloudRecoEventHandler.inputSolution = GUI.TextField(CorrectAnswerInputRect, CloudRecoEventHandler.inputSolution);
+//			GUI.Label (Alternative1Answer1LabelRect, "Alternative Answers:");
+//			CloudRecoEventHandler.alternativeAnswer1 = GUI.TextField (AlternativeAnswer1InputRect, CloudRecoEventHandler.alternativeAnswer1);
+//			CloudRecoEventHandler.alternativeAnswer2 = GUI.TextField (AlternativeAnswer2InputRect, CloudRecoEventHandler.alternativeAnswer2);
+//			CloudRecoEventHandler.alternativeAnswer3 = GUI.TextField (AlternativeAnswer3InputRect, CloudRecoEventHandler.alternativeAnswer3);
+//			
+//			GUI.skin.textField.fontSize = Screen.height / 60;
+//
+//			if(GUI.Button(SubmitQuestionButtonRect, "Submit" ))
+//			{ 
+//				StartCoroutine(CloudRecoEventHandler.postQuestion());
+//				CloudRecoEventHandler.questionTrigger = false;
+//				CloudRecoEventHandler.toastTimestamp = Environment.TickCount;
+//				CloudRecoEventHandler.questionAdded = true;
+//			}
 	}
 	
 	#endregion//UNITY_MONOBEHAVIOUR_METHODS

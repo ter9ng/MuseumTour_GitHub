@@ -159,9 +159,18 @@ public class scene2 : MonoBehaviour {
 			}
 		}
 			if(route_hasNext == false){
-			PlayerPrefs.SetString("phase","phase2");
-			PlayerPrefs.SetInt("current_img", 1);
-			Application.LoadLevel(0);
+			
+			if(PlayerPrefs.GetString("phase") == "phase1"){
+				PlayerPrefs.SetString("phase","phase2");
+				PlayerPrefs.SetInt("current_img", 1);
+				Application.LoadLevel(0);
+			}
+			else if(PlayerPrefs.GetString("phase") == "phase2"){
+				PlayerPrefs.SetString("phase", "completed");
+				PlayerPrefs.SetInt("current_img", 1);
+				Application.LoadLevel(0);
+			
+			}	
 			}
 	}
 	

@@ -81,7 +81,15 @@ public class scene2 : MonoBehaviour {
     IEnumerator Start()
     {
 		
-		WWWForm form = new WWWForm();
+		setupPhase();
+		
+		
+		
+	}
+	
+	IEnumerator setupPhase(){
+	
+			WWWForm form = new WWWForm();
 		string code = PlayerPrefs.GetString("code");
 		form.AddField("code", code); //bytt senere til id..?
 		WWW getTargets = new WWW(getTargetsUrl, form);
@@ -113,9 +121,7 @@ public class scene2 : MonoBehaviour {
         }
 		Debug.Log ("ready to enter..");
 		StartCoroutine(getQuestionsForTargetPicture(1));
-		
-		
-		
+	
 	}
 	
 	//Function for testing, returns all imageTargets linked to the session.

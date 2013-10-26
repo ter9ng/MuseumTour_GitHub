@@ -89,10 +89,10 @@ public class Menu : MonoBehaviour {
 	            PlayerPrefs.SetString("code", sessioncode);
 	            StartCoroutine(Post()); //runs Db posting.... next scene loaded in update after bool post equals true
 	
-	            AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-	            AndroidJavaClass jcToast = new AndroidJavaClass("android.widget.Toast");
-	            AndroidJavaObject jo = jc.GetStatic<AndroidJavaObject>("currentActivity");
-	            jcToast.CallStatic("makeText", jc, "TESTING", 0);
+//	            AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+//	            AndroidJavaClass jcToast = new AndroidJavaClass("android.widget.Toast");
+//	            AndroidJavaObject jo = jc.GetStatic<AndroidJavaObject>("currentActivity");
+//	            jcToast.CallStatic("makeText", jc, "TESTING", 0);
 			}
 			else
 			{
@@ -143,6 +143,15 @@ public class Menu : MonoBehaviour {
 	void Start () {
 		session1Enabled = true;
 		session2Enabled = true;
+		
+		var test = PlayerPrefs.HasKey("phase");
+		var enda = PlayerPrefs.GetString("phase");
+		
+		if(!PlayerPrefs.HasKey("phase"))
+		{
+			PlayerPrefs.SetString("phase", "Phase 1");
+		}
+		
 //		if(PlayerPrefs.HasKey("phase") == false)
 //		{//		<-- denne ville ikke trigge.. 
 //			PlayerPrefs.SetString("phase", "phase1");

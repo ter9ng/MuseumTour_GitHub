@@ -9,7 +9,9 @@ public class scene2 : MonoBehaviour {
 	static ArrayList imgTargetArray = new ArrayList();
 	static ArrayList questionsArray = new ArrayList();
 	static string printList = "";
-	string buttontext = "Scan picturez";
+	string buttontext = "Scan picture";
+	string instructions = "DETTE ER EN TEST";
+	bool showInstructions = false;
 	
 	
 	Texture2D cur_image_loaded = null;
@@ -49,6 +51,18 @@ public class scene2 : MonoBehaviour {
   		Button1Rect.y = TextRect.y + 200;
   		Button1Rect.width = Screen.width*w;
   		Button1Rect.height = Screen.height*h;
+		
+		var InstructionsButtonrect = new Rect();
+  		InstructionsButtonrect.x = 10;
+  		InstructionsButtonrect.y = Screen.height - (Screen.height*h) - 10;
+  		InstructionsButtonrect.width = Screen.width*w;
+  		InstructionsButtonrect.height = Screen.height*h;
+		
+		var TextboxRect = new Rect();
+  		TextboxRect.x = 10;
+  		TextboxRect.y = (Screen.height - (Screen.height*h) - 10) + Screen.height*h;
+  		TextboxRect.width = Screen.width;
+  		TextboxRect.height = Screen.height/4;
 
         // Make a background box
 		GUI.Box(new Rect(10,10,Screen.width-20, Screen.height-20), "Find the picture!");
@@ -64,10 +78,30 @@ public class scene2 : MonoBehaviour {
 			Application.LoadLevel(2);
 			
 		}
+		if(PlayerPrefs.GetString("phase") == "Phase 1")
+		{
+			instructions = "This is phase one. Here you will have to find and scan the image that is displayed. When you have found the picture you have to create atleast one question related to that picture.";
+			
+		}
+		if(PlayerPrefs.GetString("phase") == "Phase 2")
+		{
+			instructions = "Find the picture, scan it and: Answer dem questioooonz.";
+			
+		}		
 		
 		if(cur_image_loaded != null)
 		{//draw a "hint image" if one is loaded
 		GUI.DrawTexture(new Rect(Screen.width/4, 50, Screen.width/2, 256f), cur_image_loaded, ScaleMode.ScaleToFit, true);
+		}
+		if(showInstructions)
+		{
+			Color col = new Color(1,1,1,1.0f);
+			GUI.Box(new Rect(10,Screen.height/2,Screen.width-20, Screen.height-20), instructions);
+		}
+		if(GUI.Button(InstructionsButtonrect, "Instructions"))
+		{
+			if(!showInstructions){ showInstructions = true; }
+			else if(showInstructions){ showInstructions = false; }
 		}
 		
 		

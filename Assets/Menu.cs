@@ -160,6 +160,15 @@ public class Menu : MonoBehaviour {
 	void Start () {
 		session1Enabled = true;
 		session2Enabled = true;
+		
+		var test = PlayerPrefs.HasKey("phase");
+		var enda = PlayerPrefs.GetString("phase");
+		
+		if(!PlayerPrefs.HasKey("phase"))
+		{
+			PlayerPrefs.SetString("phase", "Phase 1");
+		}
+		
 //		if(PlayerPrefs.HasKey("phase") == false)
 //		{//		<-- denne ville ikke trigge.. 
 //			PlayerPrefs.SetString("phase", "phase1");

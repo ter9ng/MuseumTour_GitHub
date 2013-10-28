@@ -206,6 +206,13 @@ public class scene2 : MonoBehaviour {
 			
 			}	
 			}
+			else if(PlayerPrefs.GetString("phase") == "phase2"){
+				PlayerPrefs.SetString("phase", "completed");
+				PlayerPrefs.SetInt("current_img", 1);
+				Application.LoadLevel(0);
+			
+			}	
+			}
 	}
 	
 	private IEnumerator load_image_preview(string _path)

@@ -1,131 +1,298 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Phase2GUI : MonoBehaviour {
 	
 	#region VARIABLES
 	float w = 0.3f; // proportional width (0..1)
     float h = 0.05f; // proportional height (0..1)
+	public GUISkin customStyle;
 	
-	Rect TextRect = new Rect();
-	Rect Text2Rect = new Rect();
-	Rect Button1Rect = new Rect();
-	Rect QuestionButtonRect = new Rect();
-	Rect ContinueButtonRect = new Rect();
-	Rect TestToMainMenuButtonRect = new Rect(); 
-	Rect QuestionLabel1Rect = new Rect(); //Question label/textfield position
-	Rect QuestionInputRect = new Rect();
-	Rect CorrectAnswerLabelRect = new Rect(); //Correct answer label/textfield position
-	Rect CorrectAnswerInputRect = new Rect();
-	Rect Alternative1Answer1LabelRect = new Rect();
-	Rect AlternativeAnswer1InputRect = new Rect();
-	Rect AlternativeAnswer2InputRect = new Rect();
-	Rect AlternativeAnswer3InputRect = new Rect();
-	Rect SubmitQuestionButtonRect = new Rect();
+	public int selectionGrid_selectedQuestion; //used to toggle between questions in the GUI selectionGrid
+	public int selectionGrid_selectedAnswer; //used to toggle between answers in the GUI selectionGrid
+	
+	static ArrayList questionSelectionArrayList = new ArrayList(); //the questions to make available for answering
+	static ArrayList questionSelectionIDSArrayList = new ArrayList();
+	static ArrayList superList = new ArrayList();
+	static ArrayList questionDetailsArray = new ArrayList(); //contains details for a selected question (q_id, answer etc..)
+	String[] alternativeSolutionsArray; //contains the solution and alternative answers for a given question 
+	private ArrayList selectedQuestion;
+	private ArrayList allQuestionsArray; //contains every question for the session
+	private ArrayList answeredQuestions = new ArrayList();
+	
+	private static bool showQuestionList = true;
+	private static bool showQuestionDetails = false;
+	
+	string submitAnswerUrl = "http://129.241.103.145/submitAnswer.php";
+	string checkIfAnsweredUrl = "http://129.241.103.145/checkIfAnswered.php";
+	string getAnsweredQuestionsUrl = "http://129.241.103.145/getAnsweredQuestions.php";
+	string testButtonPrint = "øø";
+	bool updateWithChecked = false; 
+	
+	int questionDisplayStartRange;
+	int questionDisplayEndRange;
 	
 	#endregion //VARIABLES
 	
 	#region UNITY_MONOBEHAVIOUR_METHODS
-	void Start () {
-		
-		TextRect.x = (Screen.width*(1-w))/2;
-  		TextRect.y = (Screen.height*(1-h))/2;
-  		TextRect.width = Screen.width*w;
-  		TextRect.height = Screen.height*(h/2);
-		
-  		Text2Rect.x = (Screen.width*(1-w))/2;
-  		Text2Rect.y = TextRect.y + 100;
-  		Text2Rect.width = Screen.width*w;
-  		Text2Rect.height = Screen.height*(h/2);
-		
-  		Button1Rect.x = (Screen.width*(1-w))/2;
-  		Button1Rect.y = TextRect.y + 200;
-  		Button1Rect.width = Screen.width*w;
-  		Button1Rect.height = Screen.height*h;
-		
-		QuestionButtonRect.width = Screen.width*w;
-  		QuestionButtonRect.height = Screen.height*h;
-		QuestionButtonRect.x = Screen.width/2 -QuestionButtonRect.width/2;
-		QuestionButtonRect.y = Screen.height - 200;
-		
-		ContinueButtonRect.width = Screen.width*w;
-		ContinueButtonRect.height = Screen.height*h;
-		ContinueButtonRect.x = Screen.width/2 - QuestionButtonRect.width;
-		ContinueButtonRect.y = Screen.height - 200;
-		
-  		QuestionLabel1Rect.x = (Screen.width*(1-w))/2;
-  		QuestionLabel1Rect.y = Screen.height*h; //(Screen.height*(1-h))/2;
-  		QuestionLabel1Rect.width = Screen.width*w;
-  		QuestionLabel1Rect.height = Screen.height*(h/2);
-		
-		QuestionInputRect.x = (Screen.width*(1-w))/2;
-  		QuestionInputRect.y = QuestionLabel1Rect.y + 50; //(Screen.height*(1-h))/2;
-  		QuestionInputRect.width = Screen.width*w;
-  		QuestionInputRect.height = Screen.height*(h/2);
-		
-  		CorrectAnswerLabelRect.x = (Screen.width*(1-w))/2;
-  		CorrectAnswerLabelRect.y = QuestionInputRect.y + 50;
-  		CorrectAnswerLabelRect.width = Screen.width*w;
-  		CorrectAnswerLabelRect.height = Screen.height*(h/2);
-		
-		CorrectAnswerInputRect.x = (Screen.width*(1-w))/2;
-  		CorrectAnswerInputRect.y = CorrectAnswerLabelRect.y + 50;
-  		CorrectAnswerInputRect.width = Screen.width*w;
-  		CorrectAnswerInputRect.height = Screen.height*(h/2);
-		
-		Alternative1Answer1LabelRect.x = (Screen.width*(1-w))/2;
-  		Alternative1Answer1LabelRect.y = CorrectAnswerInputRect.y + 50;
-  		Alternative1Answer1LabelRect.width = Screen.width*w;
-  		Alternative1Answer1LabelRect.height = Screen.height*(h/2);
-		
-		AlternativeAnswer1InputRect.x = (Screen.width*(1-w))/2;
-  		AlternativeAnswer1InputRect.y = Alternative1Answer1LabelRect.y + 50;
-  		AlternativeAnswer1InputRect.width = Screen.width*w;
-  		AlternativeAnswer1InputRect.height = Screen.height*(h/2);
-		
-		AlternativeAnswer2InputRect.x = (Screen.width*(1-w))/2;
-  		AlternativeAnswer2InputRect.y = AlternativeAnswer1InputRect.y + 50;
-  		AlternativeAnswer2InputRect.width = Screen.width*w;
-  		AlternativeAnswer2InputRect.height = Screen.height*(h/2);
-		
-		AlternativeAnswer3InputRect.x = (Screen.width*(1-w))/2;
-  		AlternativeAnswer3InputRect.y = AlternativeAnswer2InputRect.y + 50;
-  		AlternativeAnswer3InputRect.width = Screen.width*w;
-  		AlternativeAnswer3InputRect.height = Screen.height*(h/2);
-		
-		SubmitQuestionButtonRect.x = (Screen.width*(1-w))/2;
-  		SubmitQuestionButtonRect.y = AlternativeAnswer3InputRect.y + 100;
-  		SubmitQuestionButtonRect.width = Screen.width*w;
-  		SubmitQuestionButtonRect.height = Screen.height*h;
+
+	void Start () 
+	{	
+		questionDisplayStartRange = 0;
+		questionDisplayEndRange = 5;
+		functionInStart(0, 5);
 	}
 	
-	void OnGUI() {
+	void functionInStart(int startRange, int endRange) {
 		
+		questionSelectionArrayList.Clear();
+		questionSelectionIDSArrayList.Clear();
+		superList.Clear();
+		
+		//Set up a list of questions to answer.. 
+		allQuestionsArray = scene2.questionsArray;
+		
+		for(int i = startRange;i<endRange;i++)
 		{
-			GUI.Label(QuestionLabel1Rect, "Upper TestLabel");
-			GUI.Label(CorrectAnswerLabelRect, "Lower TestLabel");
-			GUI.skin.label.fontSize = Screen.height / 60;
-		
-			CloudRecoEventHandler.inputQuestion = GUI.TextField(QuestionInputRect, CloudRecoEventHandler.inputQuestion);
-			CloudRecoEventHandler.inputSolution = GUI.TextField(CorrectAnswerInputRect, CloudRecoEventHandler.inputSolution);
-			GUI.Label (Alternative1Answer1LabelRect, "Alternative Answers:");
-			CloudRecoEventHandler.alternativeAnswer1 = GUI.TextField (AlternativeAnswer1InputRect, CloudRecoEventHandler.alternativeAnswer1);
-			CloudRecoEventHandler.alternativeAnswer2 = GUI.TextField (AlternativeAnswer2InputRect, CloudRecoEventHandler.alternativeAnswer2);
-			CloudRecoEventHandler.alternativeAnswer3 = GUI.TextField (AlternativeAnswer3InputRect, CloudRecoEventHandler.alternativeAnswer3);
-			
-			GUI.skin.textField.fontSize = Screen.height / 60;
-
-			if(GUI.Button(SubmitQuestionButtonRect, "Submit" ))
-			{ 
-				StartCoroutine(CloudRecoEventHandler.postQuestion());
-				CloudRecoEventHandler.questionTrigger = false;
-				CloudRecoEventHandler.toastTimestamp = Environment.TickCount;
-				CloudRecoEventHandler.questionAdded = true;
+			if(allQuestionsArray.Count>i)
+			{
+				ArrayList tempAL = (ArrayList)allQuestionsArray[i];
+				string questionAsked = (string)tempAL[1];
+				string questionID = (string)tempAL[0];
+				questionSelectionArrayList.Add(questionAsked);
+				questionSelectionIDSArrayList.Add(questionID);
 			}
+			
+		}
+		superList.Add(questionSelectionArrayList);
+		superList.Add(questionSelectionIDSArrayList);	
+		StartCoroutine(getAnsweredQuestions());
+	}
+
+	void OnGUI() {
+			
+		if(showQuestionList) //step 1: show a list of questions that can be answered in the GUI
+		{
+			if(updateWithChecked)
+			{
+				updateAnsweredQuestionsInGUI();
+			}
+			
+			String[] questionSelectionArray = (String[])questionSelectionArrayList.ToArray(typeof(string));
+			GUILayout.BeginArea(new Rect( (Screen.width/6), (Screen.height*(1f/6f)), Screen.width*(4f/6f), Screen.height*(2f/3f) ));
+			GUILayout.BeginHorizontal(GUILayout.MaxHeight(Screen.height/16f));
+			if(GUILayout.Button("LEFT",GUILayout.MaxHeight(Screen.height/16f)))
+			{
+				if(questionDisplayStartRange >= 5)
+				{
+					questionDisplayStartRange-=5;
+					questionDisplayEndRange-=5;
+					functionInStart(questionDisplayStartRange,questionDisplayEndRange);
+				}
+			}
+			if(GUILayout.Button("RIGHT",GUILayout.MaxHeight(Screen.height/16f)))
+			{
+				if(allQuestionsArray.Count>=questionDisplayEndRange)
+				{
+					questionDisplayStartRange+=5;
+					questionDisplayEndRange+=5;
+					functionInStart(questionDisplayStartRange,questionDisplayEndRange);
+				}
+			}
+			GUILayout.EndHorizontal();
+			
+			
+		  	selectionGrid_selectedQuestion = GUILayout.SelectionGrid(selectionGrid_selectedQuestion, questionSelectionArray, 1, GUILayout.MaxWidth(Screen.width*(4f/6f)), GUILayout.MaxHeight(200f));
+			
+			if(GUILayout.Button ("Answer selected question!", GUILayout.MaxHeight(Screen.height/16f)))
+			{
+				selectedQuestion = (ArrayList)allQuestionsArray[questionDisplayStartRange+selectionGrid_selectedQuestion];
+				getQuestionDetails(selectedQuestion);
+			}
+			GUILayout.EndArea();	
+		}
+		
+		if(showQuestionDetails){//step 2: show question info with alternative answers in the GUI
+		GUILayout.BeginArea(new Rect( (Screen.width/6), (Screen.height*(1f/6f)), Screen.width*(4f/6f), Screen.height*(2f/3f) ));
+		GUILayout.Label("Question asked: ");
+		string question = (string)selectedQuestion[1];
+		GUILayout.Label (question);
+		GUILayout.Label ("Select an answer:");
+		
+		selectionGrid_selectedAnswer = GUILayout.SelectionGrid(selectionGrid_selectedAnswer, alternativeSolutionsArray, 1, GUILayout.MaxWidth(Screen.width*(4f/6f)), GUILayout.MaxHeight(200f));
+	
+		if(GUILayout.Button("Submit answer!"))
+			{
+				string questionId = (string)selectedQuestion[0];
+				string selectedAlternative = (string)alternativeSolutionsArray[selectionGrid_selectedAnswer];
+				StartCoroutine(submitAnswer(questionId, selectedAlternative));
+				
+				//kan brukes til å fjerne besvarte spørsmål fra GUI, vi vil vel heller vise med farge hvilke som er besvart? .. too hard..
+				//questionSelectionArrayList.RemoveAt(selectionGrid_selectedQuestion);
+				//allQuestionsArray.RemoveAt(selectionGrid_selectedQuestion);
+		
+				showQuestionList=true;
+				showQuestionDetails=false;
+				StartCoroutine(getAnsweredQuestions());
+			}
+		GUILayout.EndArea();
+		}
+		
+
+	}
+	#endregion//UNITY_MONOBEHAVIOUR_METHODS
+	
+	//submit an answer to DB via PHP
+	IEnumerator submitAnswer(string questionId, string selectedAlternative)
+	{
+		string group = PlayerPrefs.GetString("group");
+        string code = PlayerPrefs.GetString("code");
+        WWWForm form = new WWWForm();
+		form.AddField("code", code);
+        form.AddField("grp_name", group);
+		form.AddField("answer", selectedAlternative);
+		form.AddField("questions_q_id", questionId);
+        WWW download = new WWW(submitAnswerUrl, form);
+        yield return download;
+        if ((!string.IsNullOrEmpty(download.error)))
+        {
+            Debug.Log(download.text);
+            print("Error submitting answer: " + download.error);
+        }
+        else
+        {
+			if(download.text == "error: Failed to submit answer")
+			{
+				//toastMessage = "Invalid session code!";
+			}
+			else if(download.text == "Answer submitted"){
+				Debug.Log("Posted successfully to database");
+			}
+            download.Dispose();
 		}
 	}
 	
-	#endregion//UNITY_MONOBEHAVIOUR_METHODS
+	void updateAnsweredQuestionsInGUI () {
+	
+	for(int i = 0; i<questionSelectionArrayList.Count;i++)
+	{
+		string toCheckFor = (string)((ArrayList)superList[1])[i];
+		if(answeredQuestions.Contains((string)toCheckFor))
+		{
+			string stringToChange = (string)questionSelectionArrayList[i];
+			if(!(stringToChange.Contains("(answered)"))){
+			questionSelectionArrayList[i] +=" (answered)";
+			}
+			
+		}
+	}
+	updateWithChecked = false;
+	
+	
+	}
+	
+	//used to check if a question already is answered by the group.. not currently working :)
+	IEnumerator checkIfAnswered(string questionId)
+	{
+		//tempAnswerBool = false; 
+		string group = PlayerPrefs.GetString("group");
+		string code = PlayerPrefs.GetString("code");
+        WWWForm form = new WWWForm();
+		form.AddField("code", code);
+        form.AddField("grp_name", group);
+		form.AddField("questions_q_id", questionId);
+		WWW download = new WWW(checkIfAnsweredUrl, form);
+		yield return download;
+		if ((!string.IsNullOrEmpty(download.error)))
+        {
+            Debug.Log(download.text);
+            print("Error submitting answer: " + download.error);
+        }
+		else
+		{
+			if(download.text == "answered")
+			{
+				//return true;
+				//tempAnswerBool = true; 
+			}
+			else if(download.text == "not answered")
+			{
+				//return false;
+				//tempAnswerBool = false; 
+			}
+			download.Dispose();
+		}
+	}
+	
+	IEnumerator getAnsweredQuestions()
+	{
+		string group = PlayerPrefs.GetString("group");
+		string code = PlayerPrefs.GetString("code");
+        WWWForm form = new WWWForm();
+		form.AddField("code", code);
+        form.AddField("grp_name", group);
+		WWW download = new WWW(getAnsweredQuestionsUrl, form);
+		yield return download;
+		if(download.text == "Error: Failed to check answered")
+		{
+			//
+		}
+		if(download.text == "not answered")
+		{
+			//return false;
+			//tempAnswerBool = false; 
+		}
+		else
+		{
+			var returnedString = download.data;
+			string[] innerValues = returnedString.Split('|');
+			for(int i = 0; i<innerValues.Length-1;i++)
+			{	
+				answeredQuestions.Add((string)innerValues[i]);
+			}
+				
+			}
+			updateWithChecked = true;
+			download.Dispose();
+		}
+	
+	
+	//prepare question details for display in the GUI
+	void getQuestionDetails(ArrayList questionDetails)
+	{ 
+		string solution = (string)questionDetails[2];
+		string alternative1 = (string)questionDetails[7];
+		string alternative2 = (string)questionDetails[8];
+		string alternative3 = (string)questionDetails[9];
+	
+		questionDetailsArray.Clear();
+		questionDetailsArray.Add(solution); 
+		questionDetailsArray.Add(alternative1);
+		questionDetailsArray.Add(alternative2);
+		questionDetailsArray.Add(alternative3);
+	
+		alternativeSolutionsArray = (String[])questionDetailsArray.ToArray(typeof(string));
+		shuffleArray(alternativeSolutionsArray);
+	
+		showQuestionList = false;
+		showQuestionDetails = true;
+	}
+	
+	
+	//randomize the order of alternative solutions to a question
+	void shuffleArray(string[] arrayToShuffle)
+	{
+		for(int i = 0; i<arrayToShuffle.Length; i++)
+		{
+			string tmp = arrayToShuffle[i];
+			int randomForRange = UnityEngine.Random.Range(i, arrayToShuffle.Length);
+			arrayToShuffle[i] = arrayToShuffle[randomForRange];
+			arrayToShuffle[randomForRange] = tmp;
+		}
+	}
+	
+	
 }
 

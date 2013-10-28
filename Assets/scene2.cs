@@ -7,9 +7,11 @@ public class scene2 : MonoBehaviour {
     string getTargetsUrl = "http://129.241.103.145/getTargets.php";
 	string getQuestionsUrl = "http://129.241.103.145/getQuestions.php";
 	static ArrayList imgTargetArray = new ArrayList();
-	static ArrayList questionsArray = new ArrayList();
+	public static ArrayList questionsArray = new ArrayList();
 	static string printList = "";
-	string buttontext = "Scan picturez";
+	string buttontext = "Scan picture";
+	string instructions = "DETTE ER EN TEST";
+	bool showInstructions = false;
 	
 	
 	Texture2D cur_image_loaded = null;
@@ -49,6 +51,18 @@ public class scene2 : MonoBehaviour {
   		Button1Rect.y = TextRect.y + 200;
   		Button1Rect.width = Screen.width*w;
   		Button1Rect.height = Screen.height*h;
+		
+		var InstructionsButtonrect = new Rect();
+  		InstructionsButtonrect.x = 10;
+  		InstructionsButtonrect.y = Screen.height - (Screen.height*h) - 10;
+  		InstructionsButtonrect.width = Screen.width*w;
+  		InstructionsButtonrect.height = Screen.height*h;
+		
+		var TextboxRect = new Rect();
+  		TextboxRect.x = 10;
+  		TextboxRect.y = (Screen.height - (Screen.height*h) - 10) + Screen.height*h;
+  		TextboxRect.width = Screen.width;
+  		TextboxRect.height = Screen.height/4;
 
         // Make a background box
 		GUI.Box(new Rect(10,10,Screen.width-20, Screen.height-20), "Find the picture!");
@@ -61,13 +75,33 @@ public class scene2 : MonoBehaviour {
 		{
 			printList = "";
 			buttontext = "Loading....";
-			Application.LoadLevel(2);
+			Application.LoadLevel(2); 
 			
 		}
+		if(PlayerPrefs.GetString("phase") == "Phase 1")
+		{
+			instructions = "This is phase one. Here you will have to find and scan the image that is displayed. When you have found the picture you have to create atleast one question related to that picture.";
+			
+		}
+		if(PlayerPrefs.GetString("phase") == "Phase 2")
+		{
+			instructions = "Find the picture, scan it and: Answer dem questioooonz.";
+			
+		}		
 		
 		if(cur_image_loaded != null)
 		{//draw a "hint image" if one is loaded
 		GUI.DrawTexture(new Rect(Screen.width/4, 50, Screen.width/2, 256f), cur_image_loaded, ScaleMode.ScaleToFit, true);
+		}
+		if(showInstructions)
+		{
+			Color col = new Color(1,1,1,1.0f);
+			GUI.Box(new Rect(10,Screen.height/2,Screen.width-20, Screen.height-20), instructions);
+		}
+		if(GUI.Button(InstructionsButtonrect, "Instructions"))
+		{
+			if(!showInstructions){ showInstructions = true; }
+			else if(showInstructions){ showInstructions = false; }
 		}
 		
 		
@@ -159,9 +193,18 @@ public class scene2 : MonoBehaviour {
 			}
 		}
 			if(route_hasNext == false){
-			PlayerPrefs.SetString("phase","phase2");
-			PlayerPrefs.SetInt("current_img", 1);
-			Application.LoadLevel(0);
+			
+			if(PlayerPrefs.GetString("phase") == "phase1"){
+				PlayerPrefs.SetString("phase","phase2");
+				PlayerPrefs.SetInt("current_img", 1);
+				Application.LoadLevel(0);
+			}
+			else if(PlayerPrefs.GetString("phase") == "phase2"){
+				PlayerPrefs.SetString("phase", "completed");
+				PlayerPrefs.SetInt("current_img", 1);
+				Application.LoadLevel(0);
+			
+			}	
 			}
 	}
 	
@@ -184,6 +227,7 @@ public class scene2 : MonoBehaviour {
 		Debug.Log ("entered getQuestionsForTargetPicture");
 		WWWForm form = new WWWForm();
 		form.AddField("tp_id", tp_id);
+		//form.AddField("tp_id", "1"); <-- hardkoding for kjøring i Unity..
 		WWW getQuestions = new WWW(getQuestionsUrl, form);
 		yield return getQuestions;
 		if ((!string.IsNullOrEmpty(getQuestions.error)))
@@ -199,7 +243,7 @@ public class scene2 : MonoBehaviour {
 				ArrayList questionsInnerArray = new ArrayList();
 				var value = values[i];
 				string[] innerValues = value.Split('|');
-				
+					if(innerValues.Length == 10){
 					string q_id = innerValues[0];
 					string question = innerValues[1];
 					string solution = innerValues[2];
@@ -207,14 +251,26 @@ public class scene2 : MonoBehaviour {
 					string groups_grp_id = innerValues[4];
 					string target_pictures_tp_id = innerValues[5];
 					string grp_name = innerValues[6];
+									
+					string alternative1 = innerValues[7];
+					string alternative2 = innerValues[8];
+					string alternative3 = innerValues[9];
+					//Debug.Log ("Adding to array: "+question);
 					questionsInnerArray.Add(q_id); questionsInnerArray.Add(question);questionsInnerArray.Add(solution);
-					questionsInnerArray.Add(sessions_session_id); questionsInnerArray.Add(groups_grp_id); questionsInnerArray.Add(target_pictures_tp_id);
+					questionsInnerArray.Add(sessions_session_id); questionsInnerArray.Add(groups_grp_id); questionsInnerArray.Add(target_pictures_tp_id); questionsInnerArray.Add (grp_name);
+					questionsInnerArray.Add (alternative1);questionsInnerArray.Add(alternative2); questionsInnerArray.Add(alternative3);
 					string localGroup = PlayerPrefs.GetString("group");//Skip questions that the local group created
 					if(!grp_name.Equals(localGroup)){
+						//Debug.Log ("adding to mainarray: "+questionsInnerArray[2]);
 						questionsArray.Add(questionsInnerArray);
-					}
-					
+					}		
+				}
 			}
+			Debug.Log("list size: "+questionsArray.Count);
+			//GameObject keepAlive = GameObject.Find("KeepAlive").GetComponent<KeepAliveScript>();
+			//KeepAliveScript.test = questionsArray;
+			//Component c = GameObject.Find("KeepAlive").GetComponent<KeepAliveScript>();
+			//KeepAliveScript.buttonPrint += questionsArray.Count;
 		}
 	
 	}

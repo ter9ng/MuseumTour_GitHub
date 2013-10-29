@@ -38,6 +38,9 @@ public class Phase2GUI : MonoBehaviour {
 	Rect ContinueButtonRect;
 	string answerButtonDialog = "Answer questions";
 	
+	public Texture arrow_left;
+	public Texture arrow_right;
+	public GUISkin phase2GUISkin; 
 	#endregion //VARIABLES
 	
 	#region UNITY_MONOBEHAVIOUR_METHODS
@@ -55,12 +58,12 @@ public class Phase2GUI : MonoBehaviour {
 		
 		AnswerButtonRect.width = Screen.width*w;
   		AnswerButtonRect.height = Screen.height*h;
-		AnswerButtonRect.x = Screen.width/2 -AnswerButtonRect.width/2;
+		AnswerButtonRect.x = Screen.width/2 -AnswerButtonRect.width;
 		AnswerButtonRect.y = Screen.height - 200;
 		
 		ContinueButtonRect.width = Screen.width*w;
 		ContinueButtonRect.height = Screen.height*h;
-		ContinueButtonRect.x = Screen.width/2 - AnswerButtonRect.width;
+		ContinueButtonRect.x = Screen.width/2;
 		ContinueButtonRect.y = Screen.height - 200;
 		
 		questionDisplayStartRange = 0;
@@ -97,6 +100,8 @@ public class Phase2GUI : MonoBehaviour {
 
 	void OnGUI() {
 		
+		//showQuestionList = true; //UNITYTEST
+		
 		if(CloudRecoEventHandler.dataLoaded) //if dataLoaded
 		{
 			if(GUI.Button(AnswerButtonRect, answerButtonDialog))
@@ -104,13 +109,15 @@ public class Phase2GUI : MonoBehaviour {
 				if(showQuestionList == false)showQuestionList = true; 
 				else if(showQuestionList == true)showQuestionList = false; 
 			}
-			
-			if(GUI.Button(ContinueButtonRect, "Continue"))
-			{
-				PlayerPrefs.SetInt("current_img", PlayerPrefs.GetInt("current_img") + 1);
-				showQuestionList = false;
-				showQuestionDetails = false;
-				Application.LoadLevel(1);
+			if(answeredQuestions.Count > 0){ //enable continue when atleast 1 answer is given
+				
+				if(GUI.Button(ContinueButtonRect, "Continue"))
+				{
+					PlayerPrefs.SetInt("current_img", PlayerPrefs.GetInt("current_img") + 1);
+					showQuestionList = false;
+					showQuestionDetails = false;
+					Application.LoadLevel(1);
+				}
 			}
 		}
 			
@@ -122,9 +129,12 @@ public class Phase2GUI : MonoBehaviour {
 			}
 			
 			String[] questionSelectionArray = (String[])questionSelectionArrayList.ToArray(typeof(string));
+			GUI.backgroundColor = Color.yellow;
 			GUILayout.BeginArea(new Rect( (Screen.width/6), (Screen.height*(1f/6f)), Screen.width*(4f/6f), Screen.height*(2f/3f) ));
+			//GUI.skin.label.fontSize = 20;
+			GUILayout.Label("Answer the questions below!", "HeaderLabels");
 			GUILayout.BeginHorizontal(GUILayout.MaxHeight(Screen.height/16f));
-			if(GUILayout.Button("<-- (5)",GUILayout.MaxHeight(Screen.height/16f)))
+			if(GUILayout.Button(arrow_left,GUILayout.MaxWidth((Screen.width/2f)-(Screen.width/6f)), GUILayout.MaxHeight(Screen.height/16f)))
 			{
 				if(questionDisplayStartRange >= 5)
 				{
@@ -133,7 +143,7 @@ public class Phase2GUI : MonoBehaviour {
 					functionInStart(questionDisplayStartRange,questionDisplayEndRange);
 				}
 			}
-			if(GUILayout.Button("(5) -->",GUILayout.MaxHeight(Screen.height/16f)))
+			if(GUILayout.Button(arrow_right,GUILayout.MaxWidth((Screen.width/2f)-(Screen.width/6f)), GUILayout.MaxHeight(Screen.height/16f)))
 			{
 				if(allQuestionsArray.Count>=questionDisplayEndRange)
 				{
@@ -143,28 +153,31 @@ public class Phase2GUI : MonoBehaviour {
 				}
 			}
 			GUILayout.EndHorizontal();
+			GUI.backgroundColor = Color.blue;
 			
-			
-		  	selectionGrid_selectedQuestion = GUILayout.SelectionGrid(selectionGrid_selectedQuestion, questionSelectionArray, 1, GUILayout.MaxWidth(Screen.width*(4f/6f)), GUILayout.MaxHeight(Screen.height/2f));
-			
+			int numQuestionsToShow = questionSelectionArrayList.Count; //used to make gridsize smaller if less than 5 questions are displayed
+		  	selectionGrid_selectedQuestion = GUILayout.SelectionGrid(selectionGrid_selectedQuestion, questionSelectionArray, 1, GUILayout.MaxWidth(Screen.width*(4f/6f)), GUILayout.MaxHeight(Screen.height/2f*(numQuestionsToShow/5f)));
+			GUI.backgroundColor = Color.yellow;
 			if(GUILayout.Button ("Answer selected question!", GUILayout.MaxHeight(Screen.height/16f)))
 			{
 				selectedQuestion = (ArrayList)allQuestionsArray[questionDisplayStartRange+selectionGrid_selectedQuestion];
 				getQuestionDetails(selectedQuestion);
 			}
 			GUILayout.EndArea();	
+			GUI.backgroundColor = Color.black;
 		}
 		
 		if(showQuestionDetails){//step 2: show question info with alternative answers in the GUI
+			GUI.backgroundColor = Color.yellow;
 		GUILayout.BeginArea(new Rect( (Screen.width/6), (Screen.height*(1f/6f)), Screen.width*(4f/6f), Screen.height*(2f/3f) ));
 		GUILayout.Label("Question asked: ");
 		string question = (string)selectedQuestion[1];
 		GUILayout.Label (question);
 		GUILayout.Label ("Select an answer:");
-		
-		selectionGrid_selectedAnswer = GUILayout.SelectionGrid(selectionGrid_selectedAnswer, alternativeSolutionsArray, 1, GUILayout.MaxWidth(Screen.width*(4f/6f)), GUILayout.MaxHeight(Screen.height/2f));
-	
-		if(GUILayout.Button("Submit answer!"))
+		GUI.backgroundColor = Color.blue;
+		selectionGrid_selectedAnswer = GUILayout.SelectionGrid(selectionGrid_selectedAnswer, alternativeSolutionsArray, 1, GUILayout.MaxWidth(Screen.width*(4f/6f)), GUILayout.MaxHeight((Screen.height/2f)));
+		GUI.backgroundColor = Color.yellow;
+		if(GUILayout.Button("Submit answer!", GUILayout.MaxHeight(Screen.height/16f)))
 			{
 				string questionId = (string)selectedQuestion[0];
 				string selectedAlternative = (string)alternativeSolutionsArray[selectionGrid_selectedAnswer];
@@ -179,6 +192,7 @@ public class Phase2GUI : MonoBehaviour {
 				StartCoroutine(getAnsweredQuestions());
 			}
 		GUILayout.EndArea();
+		GUI.backgroundColor = Color.black;
 		}
 		
 

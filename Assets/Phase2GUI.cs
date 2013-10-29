@@ -19,10 +19,10 @@ public class Phase2GUI : MonoBehaviour {
 	static ArrayList questionDetailsArray = new ArrayList(); //contains details for a selected question (q_id, answer etc..)
 	String[] alternativeSolutionsArray; //contains the solution and alternative answers for a given question 
 	private ArrayList selectedQuestion;
-	private ArrayList allQuestionsArray; //contains every question for the session
+	private ArrayList allQuestionsArray = new ArrayList(); //contains every question for the session
 	private ArrayList answeredQuestions = new ArrayList();
 	
-	private static bool showQuestionList = true;
+	private static bool showQuestionList = false;
 	private static bool showQuestionDetails = false;
 	
 	string submitAnswerUrl = "http://129.241.103.145/submitAnswer.php";
@@ -34,18 +34,42 @@ public class Phase2GUI : MonoBehaviour {
 	int questionDisplayStartRange;
 	int questionDisplayEndRange;
 	
+	Rect AnswerButtonRect;
+	Rect ContinueButtonRect;
+	string answerButtonDialog = "Answer questions";
+	
 	#endregion //VARIABLES
 	
 	#region UNITY_MONOBEHAVIOUR_METHODS
-
+	
+//	void OnLevelWasLoaded(int level){
+//	if(level == 3)
+//		{
+//			functionInStart(0,5);
+//		}
+//	}
+	
 	void Start () 
 	{	
+		allQuestionsArray.Clear ();
+		
+		AnswerButtonRect.width = Screen.width*w;
+  		AnswerButtonRect.height = Screen.height*h;
+		AnswerButtonRect.x = Screen.width/2 -AnswerButtonRect.width/2;
+		AnswerButtonRect.y = Screen.height - 200;
+		
+		ContinueButtonRect.width = Screen.width*w;
+		ContinueButtonRect.height = Screen.height*h;
+		ContinueButtonRect.x = Screen.width/2 - AnswerButtonRect.width;
+		ContinueButtonRect.y = Screen.height - 200;
+		
 		questionDisplayStartRange = 0;
 		questionDisplayEndRange = 5;
 		functionInStart(0, 5);
 	}
 	
 	void functionInStart(int startRange, int endRange) {
+		
 		
 		questionSelectionArrayList.Clear();
 		questionSelectionIDSArrayList.Clear();
@@ -72,6 +96,23 @@ public class Phase2GUI : MonoBehaviour {
 	}
 
 	void OnGUI() {
+		
+		if(CloudRecoEventHandler.dataLoaded) //if dataLoaded
+		{
+			if(GUI.Button(AnswerButtonRect, answerButtonDialog))
+			{
+				if(showQuestionList == false)showQuestionList = true; 
+				else if(showQuestionList == true)showQuestionList = false; 
+			}
+			
+			if(GUI.Button(ContinueButtonRect, "Continue"))
+			{
+				PlayerPrefs.SetInt("current_img", PlayerPrefs.GetInt("current_img") + 1);
+				showQuestionList = false;
+				showQuestionDetails = false;
+				Application.LoadLevel(1);
+			}
+		}
 			
 		if(showQuestionList) //step 1: show a list of questions that can be answered in the GUI
 		{
@@ -83,7 +124,7 @@ public class Phase2GUI : MonoBehaviour {
 			String[] questionSelectionArray = (String[])questionSelectionArrayList.ToArray(typeof(string));
 			GUILayout.BeginArea(new Rect( (Screen.width/6), (Screen.height*(1f/6f)), Screen.width*(4f/6f), Screen.height*(2f/3f) ));
 			GUILayout.BeginHorizontal(GUILayout.MaxHeight(Screen.height/16f));
-			if(GUILayout.Button("LEFT",GUILayout.MaxHeight(Screen.height/16f)))
+			if(GUILayout.Button("<-- (5)",GUILayout.MaxHeight(Screen.height/16f)))
 			{
 				if(questionDisplayStartRange >= 5)
 				{
@@ -92,7 +133,7 @@ public class Phase2GUI : MonoBehaviour {
 					functionInStart(questionDisplayStartRange,questionDisplayEndRange);
 				}
 			}
-			if(GUILayout.Button("RIGHT",GUILayout.MaxHeight(Screen.height/16f)))
+			if(GUILayout.Button("(5) -->",GUILayout.MaxHeight(Screen.height/16f)))
 			{
 				if(allQuestionsArray.Count>=questionDisplayEndRange)
 				{
@@ -104,7 +145,7 @@ public class Phase2GUI : MonoBehaviour {
 			GUILayout.EndHorizontal();
 			
 			
-		  	selectionGrid_selectedQuestion = GUILayout.SelectionGrid(selectionGrid_selectedQuestion, questionSelectionArray, 1, GUILayout.MaxWidth(Screen.width*(4f/6f)), GUILayout.MaxHeight(200f));
+		  	selectionGrid_selectedQuestion = GUILayout.SelectionGrid(selectionGrid_selectedQuestion, questionSelectionArray, 1, GUILayout.MaxWidth(Screen.width*(4f/6f)), GUILayout.MaxHeight(Screen.height/2f));
 			
 			if(GUILayout.Button ("Answer selected question!", GUILayout.MaxHeight(Screen.height/16f)))
 			{
@@ -121,7 +162,7 @@ public class Phase2GUI : MonoBehaviour {
 		GUILayout.Label (question);
 		GUILayout.Label ("Select an answer:");
 		
-		selectionGrid_selectedAnswer = GUILayout.SelectionGrid(selectionGrid_selectedAnswer, alternativeSolutionsArray, 1, GUILayout.MaxWidth(Screen.width*(4f/6f)), GUILayout.MaxHeight(200f));
+		selectionGrid_selectedAnswer = GUILayout.SelectionGrid(selectionGrid_selectedAnswer, alternativeSolutionsArray, 1, GUILayout.MaxWidth(Screen.width*(4f/6f)), GUILayout.MaxHeight(Screen.height/2f));
 	
 		if(GUILayout.Button("Submit answer!"))
 			{
@@ -169,6 +210,9 @@ public class Phase2GUI : MonoBehaviour {
 			}
 			else if(download.text == "Answer submitted"){
 				Debug.Log("Posted successfully to database");
+			}
+			else if(download.text == "Answer updated"){
+				Debug.Log ("Updated successfully to database");
 			}
             download.Dispose();
 		}

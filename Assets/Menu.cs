@@ -87,7 +87,7 @@ public class Menu : MonoBehaviour {
 			{
 				PlayerPrefs.SetString("group", groupname);
 	            PlayerPrefs.SetString("code", sessioncode);
-				PlayerPrefs.SetString("phase", "phase1"); // <-- for testing, vi gjør dette en annen plass etterpå..
+				PlayerPrefs.SetString("phase", "Phase 1"); // <-- for testing, vi gjør dette en annen plass etterpå..
 	            StartCoroutine(Post()); //runs Db posting.... next scene loaded in update after bool post equals true
 //	
 //	            AndroidJavaClass jc = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
@@ -114,7 +114,7 @@ public class Menu : MonoBehaviour {
 					{
 						PlayerPrefs.SetString("group", groupname);
 	            		PlayerPrefs.SetString("code", sessioncode);
-						PlayerPrefs.SetString("phase", "phase2");
+						PlayerPrefs.SetString("phase", "Phase 2");
 	            		StartCoroutine(Post()); //runs Db posting.... next scene loaded in update after bool post equals true
 					}
 					else

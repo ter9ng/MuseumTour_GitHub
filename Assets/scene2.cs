@@ -12,6 +12,7 @@ public class scene2 : MonoBehaviour {
 	string buttontext = "Scan picture";
 	string instructions = "DETTE ER EN TEST";
 	bool showInstructions = false;
+	int getQuestions_tp_id; // ID of the targetPicture to get questions for.. 
 	
 	
 	Texture2D cur_image_loaded = null;
@@ -73,6 +74,7 @@ public class scene2 : MonoBehaviour {
 		
 		if(GUI.Button(Button1Rect, buttontext))
 		{
+			var yolo = PlayerPrefs.GetString("phase");
 			printList = "";
 			buttontext = "Loading....";
 			Application.LoadLevel(2); 
@@ -110,10 +112,11 @@ public class scene2 : MonoBehaviour {
     void Awake()
     {
 
-    }
+    }		
 
     void Start()
     {
+		
 		StartCoroutine(setUp());
 	}
 	
@@ -149,7 +152,9 @@ public class scene2 : MonoBehaviour {
 			buildGUIList();
         }
 		Debug.Log ("ready to enter..");
-		StartCoroutine(getQuestionsForTargetPicture(1));
+		
+		
+				StartCoroutine(getQuestionsForTargetPicture(getQuestions_tp_id));
 	
 	
 	
@@ -180,6 +185,10 @@ public class scene2 : MonoBehaviour {
 		{
 			ArrayList tempImgTargetInnerArray = (ArrayList)imgTargetArray[j];
 			string temp_route_number = (string)tempImgTargetInnerArray[4];
+			if(!PlayerPrefs.HasKey("current_img"))
+			{
+				PlayerPrefs.SetInt("current_img", 1);
+			}
 			string current_img_toString = PlayerPrefs.GetInt("current_img").ToString();
 			if(temp_route_number == current_img_toString)
 			{
@@ -189,24 +198,20 @@ public class scene2 : MonoBehaviour {
 				PlayerPrefs.SetString("current_image_name", imgName);
 				StartCoroutine(load_image_preview(imgHostName+imgName));
 				route_hasNext = true;
+				
+				string temp = (string)tempImgTargetInnerArray[0];
+				int.TryParse(temp,out getQuestions_tp_id);
 				break;
 			}
 		}
 			if(route_hasNext == false){
 			
-			if(PlayerPrefs.GetString("phase") == "phase1"){
-				PlayerPrefs.SetString("phase","phase2");
+			if(PlayerPrefs.GetString("phase") == "Phase 1"){
+				PlayerPrefs.SetString("phase","Phase 2");
 				PlayerPrefs.SetInt("current_img", 1);
 				Application.LoadLevel(0);
 			}
-			else if(PlayerPrefs.GetString("phase") == "phase2"){
-				PlayerPrefs.SetString("phase", "completed");
-				PlayerPrefs.SetInt("current_img", 1);
-				Application.LoadLevel(0);
-			
-			}	
-			}
-			else if(PlayerPrefs.GetString("phase") == "phase2"){
+			else if(PlayerPrefs.GetString("phase") == "Phase 2"){
 				PlayerPrefs.SetString("phase", "completed");
 				PlayerPrefs.SetInt("current_img", 1);
 				Application.LoadLevel(0);
@@ -231,6 +236,7 @@ public class scene2 : MonoBehaviour {
 	 * @param tp_id - identifier of the Target Picture
 	**/
 	IEnumerator getQuestionsForTargetPicture(int tp_id){
+		questionsArray.Clear ();
 		Debug.Log ("entered getQuestionsForTargetPicture");
 		WWWForm form = new WWWForm();
 		form.AddField("tp_id", tp_id);

@@ -335,11 +335,11 @@ public class CloudRecoEventHandler : MonoBehaviour, ICloudRecoEventHandler
         alternativeAnswer3 = "";
         dialogButton = "Add question";
 		
-		if(PlayerPrefs.GetString("phase") == "phase1"){
+		if(PlayerPrefs.GetString("phase") == "Phase 1"){
 		GetComponent<Phase1GUI>().enabled = true;
 		GetComponent<Phase2GUI>().enabled = false;
 		}
-		else if(PlayerPrefs.GetString("phase") == "phase2"){
+		else if(PlayerPrefs.GetString("phase") == "Phase 2"){
 		GetComponent<Phase1GUI>().enabled = false;
 		GetComponent<Phase2GUI>().enabled = true;
 		}

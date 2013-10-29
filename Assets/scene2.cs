@@ -77,7 +77,8 @@ public class scene2 : MonoBehaviour {
 			var yolo = PlayerPrefs.GetString("phase");
 			printList = "";
 			buttontext = "Loading....";
-			Application.LoadLevel(2); 
+			Application.LoadLevel(2);  // <-- bytt til 2 
+			//Application.LoadLevel(3);  // UNITYTEST
 			
 		}
 		if(PlayerPrefs.GetString("phase") == "Phase 1")
@@ -240,7 +241,7 @@ public class scene2 : MonoBehaviour {
 		Debug.Log ("entered getQuestionsForTargetPicture");
 		WWWForm form = new WWWForm();
 		form.AddField("tp_id", tp_id);
-		//form.AddField("tp_id", "1"); <-- hardkoding for kjøring i Unity..
+		//form.AddField("tp_id", "1"); //<-- UNITYTESTING.
 		WWW getQuestions = new WWW(getQuestionsUrl, form);
 		yield return getQuestions;
 		if ((!string.IsNullOrEmpty(getQuestions.error)))

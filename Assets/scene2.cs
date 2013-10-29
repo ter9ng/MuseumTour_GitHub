@@ -19,10 +19,15 @@ public class scene2 : MonoBehaviour {
 	public string imgHostName = "http://129.241.103.145/hintImg/";
 	public string imgName = ""; //sett denne når en får et bilde en skal finne...
 	
+	public GUISkin customskin;
+	
     void OnGUI()
     {
         string group = PlayerPrefs.GetString("group");
-		
+		GUI.skin = customskin;
+		GUI.skin.button.fontSize = Screen.height / 30;
+		GUI.skin.label.fontSize = Screen.height / 40;
+		GUI.skin.textField.fontSize = Screen.height / 40;
 
         float w = 0.3f; // proportional width (0..1)
         float h = 0.05f; // proportional height (0..1)
@@ -48,10 +53,11 @@ public class scene2 : MonoBehaviour {
         Label2Rect.height = Screen.height * (h / 2);
 		
 		var Button1Rect = new Rect();
-  		Button1Rect.x = (Screen.width*(1-w))/2;
-  		Button1Rect.y = TextRect.y + 200;
-  		Button1Rect.width = Screen.width*w;
+		Button1Rect.width = Screen.width*w *2;
   		Button1Rect.height = Screen.height*h;
+  		Button1Rect.x = (Screen.width / 2) - Button1Rect.width/2;
+  		Button1Rect.y = TextRect.y + 200;
+  		
 		
 		var InstructionsButtonrect = new Rect();
   		InstructionsButtonrect.x = 10;
@@ -67,10 +73,8 @@ public class scene2 : MonoBehaviour {
 
         // Make a background box
 		GUI.Box(new Rect(10,10,Screen.width-20, Screen.height-20), "Find the picture!");
-		GUI.skin.box.fontSize = Screen.height / 60;
 		
 		GUI.Label(Label1Rect, printList);
-		GUI.skin.label.fontSize = Screen.height/60;
 		
 		if(GUI.Button(Button1Rect, buttontext))
 		{
@@ -98,7 +102,13 @@ public class scene2 : MonoBehaviour {
 		if(showInstructions)
 		{
 			Color col = new Color(1,1,1,1.0f);
-			GUI.Box(new Rect(10,Screen.height/2,Screen.width-20, Screen.height-20), instructions);
+			var background = new GUIStyle(GUI.skin.box);
+			background.normal.background = MakeTex(2, 2, new Color( 0f, 0f, 0f, 0.7f ));
+			background.normal.textColor = col;
+			//background.margin.left = 100;
+			
+			GUI.Box(new Rect(10,Screen.height/2,Screen.width-20, Screen.height/4), instructions, background);
+			
 		}
 		if(GUI.Button(InstructionsButtonrect, "Instructions"))
 		{
@@ -108,6 +118,20 @@ public class scene2 : MonoBehaviour {
 		
 		
     }
+	
+	private Texture2D MakeTex( int width, int height, Color col )
+	{
+		Color[] pix = new Color[width * height];
+		for( int i = 0; i < pix.Length; ++i )
+		{
+			pix[ i ] = col;
+		}
+		Texture2D result = new Texture2D( width, height );
+		result.SetPixels( pix );
+		result.Apply();
+		return result;
+
+}
 
     void Awake()
     {

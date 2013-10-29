@@ -14,57 +14,63 @@ public class Menu : MonoBehaviour {
 	private bool showToast = false;
 	public bool session1Enabled;
 	public bool session2Enabled;
+	public GUISkin customskin;
+	
 	
 	void OnGUI () {
 		
 		float w = 0.3f; // proportional width (0..1)
   		float h = 0.05f; // proportional height (0..1)
+		GUI.skin = customskin;
 		
+		GUI.skin.button.fontSize = Screen.height / 30;
+		GUI.skin.label.fontSize = Screen.height / 40;
+		GUI.skin.textField.fontSize = Screen.height / 40;
 		
+		var Label1Rect = new Rect();
+  		Label1Rect.x = (Screen.width*(1-w))/2;
+  		Label1Rect.y = (Screen.height / 3);
+  		Label1Rect.width = Screen.width*w;
+  		Label1Rect.height = Screen.height*(h);
 		
   		var TextRect = new Rect();
-  		TextRect.x = (Screen.width*(1-w))/2;
-  		TextRect.y = (Screen.height*(1-h))/2;
   		TextRect.width = Screen.width*w;
-  		TextRect.height = Screen.height*(h/2);
+  		TextRect.height = Screen.height*(h);
+		TextRect.x = (Screen.width*(1-w))/2;
+  		TextRect.y = Label1Rect.y + 30 + TextRect.height;
+		
+		var Label2Rect = new Rect();
+  		Label2Rect.width = Screen.width*w*2;
+  		Label2Rect.height = Screen.height*(h);
+		Label2Rect.x = (Screen.width*(1-w))/2;
+  		Label2Rect.y = TextRect.y + 30 + Label2Rect.height;
+		
+		var Text2Rect = new Rect();
+  		Text2Rect.width = Screen.width*w;
+  		Text2Rect.height = Screen.height*(h);
+  		Text2Rect.x = (Screen.width*(1-w))/2;
+  		Text2Rect.y = Label2Rect.y + 30 + Text2Rect.height;
+		
+		var Button1Rect = new Rect();
+  		Button1Rect.width = Screen.width*w;
+  		Button1Rect.height = Screen.height*h;
+  		Button1Rect.x = (Screen.width*(1-w))/2;
+  		Button1Rect.y = Text2Rect.y + 50 + Button1Rect.height;
+		
+		var Button2Rect = new Rect();
+  		Button2Rect.width = Screen.width*w;
+  		Button2Rect.height = Screen.height*h;
+  		Button2Rect.x = (Screen.width*(1-w))/2;
+  		Button2Rect.y = Button1Rect.y + 30 + Button2Rect.height;
 		
 		var PhaseInfoRect = new Rect();
   		PhaseInfoRect.x = (Screen.width*(1-w))/2;
   		PhaseInfoRect.y = TextRect.y - 150;
   		PhaseInfoRect.width = Screen.width*w;
-  		PhaseInfoRect.height = Screen.height*(h/2);
-		
-		var Label1Rect = new Rect();
-  		Label1Rect.x = (Screen.width*(1-w))/2;
-  		Label1Rect.y = TextRect.y - 50;
-  		Label1Rect.width = Screen.width*w;
-  		Label1Rect.height = Screen.height*(h/2);
+  		PhaseInfoRect.height = Screen.height*(h);
 		
 		
 		
-		var Label2Rect = new Rect();
-  		Label2Rect.x = (Screen.width*(1-w))/2;
-  		Label2Rect.y = TextRect.y + 50;
-  		Label2Rect.width = Screen.width*w;
-  		Label2Rect.height = Screen.height*(h/2);
-		
-		var Text2Rect = new Rect();
-  		Text2Rect.x = (Screen.width*(1-w))/2;
-  		Text2Rect.y = TextRect.y + 100;
-  		Text2Rect.width = Screen.width*w;
-  		Text2Rect.height = Screen.height*(h/2);
-		
-		var Button1Rect = new Rect();
-  		Button1Rect.x = (Screen.width*(1-w))/2;
-  		Button1Rect.y = TextRect.y + 200;
-  		Button1Rect.width = Screen.width*w;
-  		Button1Rect.height = Screen.height*h;
-		
-		var Button2Rect = new Rect();
-  		Button2Rect.x = (Screen.width*(1-w))/2;
-  		Button2Rect.y = Button1Rect.y + 100;
-  		Button2Rect.width = Screen.width*w;
-  		Button2Rect.height = Screen.height*h;
 		
 		// Make a background box
 		GUI.Box(new Rect(10,10,Screen.width-20, Screen.height-20), "Choose phase");
@@ -74,7 +80,7 @@ public class Menu : MonoBehaviour {
 		
 		GUI.Label(Label1Rect, "Enter code");
 		GUI.Label(Label2Rect, "Enter group name");
-		GUI.skin.label.fontSize = Screen.height / 60;
+		//GUI.skin.label.fontSize = Screen.height / 60;
 		
 		sessioncode = GUI.TextField(TextRect, sessioncode);
 		groupname = GUI.TextField(Text2Rect, groupname);
@@ -134,7 +140,7 @@ public class Menu : MonoBehaviour {
 				toastTimestamp = Environment.TickCount;
 			}
 		}
-		GUI.skin.button.fontSize = Screen.height / 60;
+		
 		
 		//toast for messages e.g you forgot to input session code
 		//long temptest = Environment.TickCount;
@@ -160,6 +166,9 @@ public class Menu : MonoBehaviour {
 	void Start () {
 		session1Enabled = true;
 		session2Enabled = true;
+		
+		
+		
 		
 		var test = PlayerPrefs.HasKey("phase");
 		var enda = PlayerPrefs.GetString("phase");

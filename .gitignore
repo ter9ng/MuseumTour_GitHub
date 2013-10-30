@@ -49,6 +49,7 @@ local.properties
 *.mdb
 *.userprefs
 *.so
+*.a
 Temp/
 Library/
 obj/

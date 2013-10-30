@@ -380,17 +380,51 @@ public class CloudRecoEventHandler : MonoBehaviour, ICloudRecoEventHandler
             DrawTexture(mRequestingTexture);
         }
 		
-			GameObject infoText = GameObject.Find("InfoText");
-			TextMesh t = (TextMesh)infoText.GetComponent(typeof(TextMesh));
-			tp_info = tp_info.Replace("\\n", "\n");
-			t.text = tp_info;
+		GameObject infoText = GameObject.Find("InfoText");
+		TextMesh t = (TextMesh)infoText.GetComponent(typeof(TextMesh));
+		tp_info = tp_info.Replace("\\n", "\n");
+		t.text = WrapText(tp_info);
+		
+		
 		
         // draw error messages in case there were any
         ErrorMsg.Draw();
     }
 
     #endregion // UNTIY_MONOBEHAVIOUR_METHODS
-
+	
+	public string WrapText(string text)
+	{//30 tegn pr linje
+		string wrapped= "";
+		int counter = 0;
+		int maxTegn = 25;
+		bool isSpace = false;
+		
+		foreach(char c in text)
+		{
+			if(char.IsWhiteSpace(c)){ isSpace = true; }
+			else{ isSpace = false; }
+			
+			if(counter < maxTegn)
+			{
+				wrapped += c;
+				counter++;
+			}
+			else if(counter >= maxTegn && isSpace)
+			{
+				
+				wrapped += c + "\n";
+				counter = 0;
+			}
+			else if(counter >= maxTegn && !isSpace)
+			{
+				
+				wrapped += c;
+			}
+		}
+		
+		return wrapped;
+	}
 
 
     #region PRIVATE_METHODS

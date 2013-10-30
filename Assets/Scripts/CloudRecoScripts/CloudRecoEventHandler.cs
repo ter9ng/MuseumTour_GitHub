@@ -385,7 +385,6 @@ public class CloudRecoEventHandler : MonoBehaviour, ICloudRecoEventHandler
 			tp_info = tp_info.Replace("\\n", "\n");
 			t.text = tp_info;
 		
-
         // draw error messages in case there were any
         ErrorMsg.Draw();
     }

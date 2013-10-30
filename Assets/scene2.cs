@@ -96,12 +96,12 @@ public class scene2 : MonoBehaviour {
 		}
 		if(PlayerPrefs.GetString("phase") == "Phase 1")
 		{
+			//instructions = "This is phase one. Here you will have\n to find and scan the image \nthat is displayed. When you have found\n the picture you have to create\n atleast one question related to that picture.";
 			instructions = "This is phase one. Here you will have to find and scan the image that is displayed. When you have found the picture you have to create atleast one question related to that picture.";
-			
 		}
 		if(PlayerPrefs.GetString("phase") == "Phase 2")
 		{
-			instructions = "Find the picture, scan it and: Answer dem questioooonz.";
+			instructions = "Find the picture, scan it and:\n Answer dem questioooonz.";
 			
 		}		
 		
@@ -116,8 +116,10 @@ public class scene2 : MonoBehaviour {
 			background.normal.background = MakeTex(2, 2, new Color( 0f, 0f, 0f, 0.7f ));
 			background.normal.textColor = col;
 			//background.margin.left = 100;
-			
-			GUI.Box(new Rect(10,Screen.height/2,Screen.width-20, Screen.height/4), instructions, background);
+			GUI.Box(new Rect(10,Screen.height/2,Screen.width-20, Screen.height/4), "", background);
+			GUI.enabled = false;
+			GUI.TextArea(new Rect(10,Screen.height/2,Screen.width-20, Screen.height/4), instructions);
+			GUI.enabled = true;
 			
 		}
 		if(GUI.Button(InstructionsButtonrect, "Instructions"))

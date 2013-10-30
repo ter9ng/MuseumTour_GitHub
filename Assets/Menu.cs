@@ -27,6 +27,7 @@ public class Menu : MonoBehaviour {
 		GUI.skin.button.fontSize = Screen.height / 30;
 		GUI.skin.label.fontSize = Screen.height / 40;
 		GUI.skin.textField.fontSize = Screen.height / 40;
+		GUI.skin.textArea.fontSize = Screen.height / 40;
 		
 		
 		var Label1Rect = new Rect();
@@ -154,7 +155,10 @@ public class Menu : MonoBehaviour {
 			background.normal.textColor = col;
 			background.fontSize = Screen.height / 40;
 			//GUI.skin.box.fontSize = Screen.height / 60;
-			GUI.Box(new Rect((Screen.width/3)-(Screen.width/6), Screen.height/8, Screen.width/1.5f, Screen.height/4), "Error: "+toastMessage, background);
+			GUI.Box(new Rect((Screen.width/3)-(Screen.width/6), Screen.height/8, Screen.width/1.5f, Screen.height/4), "", background);
+			GUI.enabled = false;
+			GUI.TextArea(new Rect((Screen.width/3)-(Screen.width/6), Screen.height/8, Screen.width/1.5f, Screen.height/4), "Error: "+toastMessage);
+			GUI.enabled = true;
 		}
 
 

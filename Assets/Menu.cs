@@ -22,10 +22,14 @@ public class Menu : MonoBehaviour {
 		float w = 0.3f; // proportional width (0..1)
   		float h = 0.05f; // proportional height (0..1)
 		GUI.skin = customskin;
+		var border = new RectOffset(0, 0, 0, 0);
 		
 		GUI.skin.button.fontSize = Screen.height / 30;
 		GUI.skin.label.fontSize = Screen.height / 40;
 		GUI.skin.textField.fontSize = Screen.height / 40;
+		customskin.box.border = border;
+		customskin.window.border = border;
+		
 		
 		var Label1Rect = new Rect();
   		Label1Rect.x = (Screen.width*(1-w))/2;
@@ -73,7 +77,7 @@ public class Menu : MonoBehaviour {
 		
 		
 		// Make a background box
-		GUI.Box(new Rect(10,10,Screen.width-20, Screen.height-20), "Choose phase");
+		GUI.Box(new Rect(10,10,Screen.width-20, Screen.height-20), "");
 		GUI.skin.box.fontSize = Screen.height / 30;
 		
 		//GUI.Label(PhaseInfoRect, "Ready for " + PlayerPrefs.GetString("phase"));
@@ -146,8 +150,13 @@ public class Menu : MonoBehaviour {
 		//long temptest = Environment.TickCount;
 		if(showToast == true)
 		{
-			GUI.skin.box.fontSize = Screen.height / 60;
-			GUI.Box(new Rect((Screen.width/3)-(Screen.width/6), Screen.height/4, Screen.width/1.5f, 100), "Error: "+toastMessage);
+			Color col = new Color(1,1,1,1.0f);
+			var background = new GUIStyle(GUI.skin.box);
+			background.normal.background = MakeTex(2, 2, new Color( 0f, 0f, 0f, 0.7f ));
+			background.normal.textColor = col;
+			background.fontSize = Screen.height / 40;
+			//GUI.skin.box.fontSize = Screen.height / 60;
+			GUI.Box(new Rect((Screen.width/3)-(Screen.width/6), Screen.height/8, Screen.width/1.5f, Screen.height/4), "Error: "+toastMessage, background);
 		}
 
 
@@ -160,6 +169,19 @@ public class Menu : MonoBehaviour {
 		//if(GUI.Button(new Rect(20,height/2,width-10,height/2), "De to folka")) {
 		//	Application.LoadLevel(2);
 		//}
+	}
+	
+	private Texture2D MakeTex( int width, int height, Color col )
+	{
+		Color[] pix = new Color[width * height];
+		for( int i = 0; i < pix.Length; ++i )
+		{
+			pix[ i ] = col;
+		}
+		Texture2D result = new Texture2D( width, height );
+		result.SetPixels( pix );
+		result.Apply();
+		return result;
 	}
 
 	// Use this for initialization

@@ -27,8 +27,6 @@ public class Menu : MonoBehaviour {
 		GUI.skin.button.fontSize = Screen.height / 30;
 		GUI.skin.label.fontSize = Screen.height / 40;
 		GUI.skin.textField.fontSize = Screen.height / 40;
-		customskin.box.border = border;
-		customskin.window.border = border;
 		
 		
 		var Label1Rect = new Rect();
@@ -46,7 +44,7 @@ public class Menu : MonoBehaviour {
 		var Label2Rect = new Rect();
   		Label2Rect.width = Screen.width*w*2;
   		Label2Rect.height = Screen.height*(h);
-		Label2Rect.x = (Screen.width*(1-w))/2;
+		Label2Rect.x = (Screen.width/2) -Label2Rect.width/2;
   		Label2Rect.y = TextRect.y + 30 + Label2Rect.height;
 		
 		var Text2Rect = new Rect();

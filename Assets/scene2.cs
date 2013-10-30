@@ -39,18 +39,22 @@ public class scene2 : MonoBehaviour {
   		TextRect.width = Screen.width*w;
   		TextRect.height = Screen.height*(h/2);
 		
+		
+		
+		
 		var Label1Rect = new Rect();
-        Label1Rect.x = (Screen.width * (1 - w)) / 2;
-        Label1Rect.y = (Screen.height * (1 - h)) / 2;
-        Label1Rect.width = Screen.width * w;
+        Label1Rect.width = Screen.width * w * 2;
         Label1Rect.height = Screen.height * (h / 2)*100;
+		Label1Rect.x = (Screen.width/2) - Label1Rect.width /2;
+        Label1Rect.y = (Screen.height * (1 - h)) / 2;
 
 
         var Label2Rect = new Rect();
-        Label2Rect.x = (Screen.width * (1 - w)) / 2;
-        Label2Rect.y = Label1Rect.y - 100;
-        Label2Rect.width = Screen.width * w;
+		Label2Rect.width = Screen.width * w;
         Label2Rect.height = Screen.height * (h / 2);
+        Label2Rect.x = (Screen.width/2) - Label2Rect.width/2;
+        Label2Rect.y = Label1Rect.y - 100;
+        
 		
 		var Button1Rect = new Rect();
 		Button1Rect.width = Screen.width*w *2;
@@ -70,6 +74,12 @@ public class scene2 : MonoBehaviour {
   		TextboxRect.y = (Screen.height - (Screen.height*h) - 10) + Screen.height*h;
   		TextboxRect.width = Screen.width;
   		TextboxRect.height = Screen.height/4;
+		
+		var ImageRect = new Rect();
+        ImageRect.width = Screen.width/2;
+        ImageRect.height = 256f;
+		ImageRect.x = (Screen.width/2) - ImageRect.width/2;
+        ImageRect.y = TextRect.y - 30 - ImageRect.height;
 
         // Make a background box
 		GUI.Box(new Rect(10,10,Screen.width-20, Screen.height-20), "Find the picture!");
@@ -97,7 +107,7 @@ public class scene2 : MonoBehaviour {
 		
 		if(cur_image_loaded != null)
 		{//draw a "hint image" if one is loaded
-		GUI.DrawTexture(new Rect(Screen.width/4, 50, Screen.width/2, 256f), cur_image_loaded, ScaleMode.ScaleToFit, true);
+		GUI.DrawTexture(ImageRect, cur_image_loaded, ScaleMode.ScaleToFit, true);
 		}
 		if(showInstructions)
 		{

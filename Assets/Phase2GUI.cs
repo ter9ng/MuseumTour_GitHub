@@ -100,6 +100,11 @@ public class Phase2GUI : MonoBehaviour {
 
 	void OnGUI() {
 		
+		
+		GUI.skin.button.fontSize = Screen.height / 30;
+		GUI.skin.label.fontSize = Screen.height / 40;
+		GUI.skin.textField.fontSize = Screen.height / 40;
+		
 		//showQuestionList = true; //UNITYTEST
 		
 		if(CloudRecoEventHandler.dataLoaded) //if dataLoaded

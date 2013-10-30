@@ -23,6 +23,7 @@ public class Phase1GUI : MonoBehaviour {
 	Rect AlternativeAnswer2InputRect = new Rect();
 	Rect AlternativeAnswer3InputRect = new Rect();
 	Rect SubmitQuestionButtonRect = new Rect();
+	public GUISkin customskin;
 	
 	#endregion //VARIABLES
 	
@@ -101,6 +102,10 @@ public class Phase1GUI : MonoBehaviour {
 	}
 	
 	void OnGUI() {
+		
+		GUI.skin.button.fontSize = Screen.height / 30;
+		GUI.skin.label.fontSize = Screen.height / 40;
+		GUI.skin.textField.fontSize = Screen.height / 40;
 		
 		if(CloudRecoEventHandler.dataLoaded) //if dataLoaded
 		{
